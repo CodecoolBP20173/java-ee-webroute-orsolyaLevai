@@ -1,4 +1,4 @@
-package main.java.com.codecool.webroute;
+package com.codecool.webroute;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface WebRoute {
-    String route() default "/";
+    String value() default "";
 }
