@@ -3,15 +3,18 @@ package com.codecool.webroute;
 import com.sun.net.httpserver.HttpExchange;
 
 public class WebRoutes {
-    @WebRoute(route = "/")
+    @WebRoute(path = "/")
     public static String routeIndex(HttpExchange requestData) {
-        // Here goes the code to handle all requests going to myserver.com/test
-        // and to return something
-        return "Index";
+        return "<h1>This is the index page</h1>";
     }
 
-    @WebRoute(route = "/test")
+    @WebRoute(path = "/test")
     public static String routeTest(HttpExchange requestData) {
-        return "Test";
+        return "<h1>This is the test page</h1>";
+    }
+
+    @WebRoute(method="POST", path = "/users")
+    public static String routeGetUsers(HttpExchange requestData) {
+        return "<h1>This is the users page with "+ requestData.getRequestMethod() +" request</h1>";
     }
 }

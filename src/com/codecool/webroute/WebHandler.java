@@ -12,9 +12,6 @@ import java.lang.reflect.Method;
 public class WebHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        //String response = "This is the response";
-        //String response = httpExchange.getRequestURI().toString();
-
         String response = getRequestedRoute(httpExchange);
         System.out.println(response);
 
@@ -26,6 +23,7 @@ public class WebHandler implements HttpHandler {
 
     String getRequestedRoute(HttpExchange httpExchange) {
         String uri = httpExchange.getRequestURI().toString();
+
         try {
             for (Method method : Class.forName("com.codecool.webroute.WebRoutes")
                     .getMethods()) {
@@ -33,13 +31,11 @@ public class WebHandler implements HttpHandler {
                 if (method.isAnnotationPresent(WebRoute.class)) {
                     Annotation annotation = method.getAnnotation(WebRoute.class);
                     WebRoute webRoute = (WebRoute) annotation;
-                    //System.out.println(m.getName());
-                    if (webRoute.route().equals(uri)) {
-                        //System.out.println(method.getName());
 
+                    if (webRoute.path().equals(uri)) {
                         try {
                             Object returnValue = method.invoke(null, httpExchange);
-                            System.out.println(returnValue);
+                            return (String) returnValue;
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         } catch (InvocationTargetException e) {
@@ -51,8 +47,7 @@ public class WebHandler implements HttpHandler {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        /*if (uri.equals("/")) System.out.println("index");
-        else if (uri.equals("/test")) System.out.println("test");*/
+
         return "";
     }
 

@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface WebRoute {
-    String route() default "";
+    String method() default "GET";
+    String path();
 }
