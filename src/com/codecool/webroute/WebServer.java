@@ -11,6 +11,7 @@ public class WebServer {
         Class handler = Class.forName("com.codecool.webroute.WebHandler");
         Object objHandler = handler.newInstance();
 
+
         server.createContext("/", (WebHandler) objHandler);
         server.setExecutor(null); // creates a default executor
         server.start();

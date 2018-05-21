@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.regex.Pattern;
 
 public class WebHandler implements HttpHandler {
     @Override
@@ -31,8 +32,13 @@ public class WebHandler implements HttpHandler {
                 if (method.isAnnotationPresent(WebRoute.class)) {
                     Annotation annotation = method.getAnnotation(WebRoute.class);
                     WebRoute webRoute = (WebRoute) annotation;
+                    //System.out.println(uri);
+                    String webRoutePath = webRoute.path();
 
+                    //if ("/users/<valami>".matches("/users/\\<[a-z]+\\>")) System.out.println("yeah");
+                    //System.out.println("a" + webRoutePath);
                     if (webRoute.path().equals(uri)) {
+                        //System.out.println(webRoutePath);
                         try {
                             Object returnValue = method.invoke(null, httpExchange);
                             return (String) returnValue;
@@ -41,7 +47,20 @@ public class WebHandler implements HttpHandler {
                         } catch (InvocationTargetException e) {
                             e.printStackTrace();
                         }
+                    } else if (uri.matches("/users/[a-z]+") && webRoute.path().matches("/users/\\<[a-zA-Z]+\\>")) {
+                        //System.out.println(webRoutePath);
+                        Object returnValue = "";
+                        try {
+                            returnValue  = method.invoke(null, httpExchange);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        return (String) returnValue;
                     }
+
+
                 }
             }
         } catch (ClassNotFoundException e) {
