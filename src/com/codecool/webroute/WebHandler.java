@@ -11,36 +11,40 @@ import java.lang.reflect.Method;
 
 public class WebHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange t) throws IOException {
+    public void handle(HttpExchange httpExchange) throws IOException {
         //String response = "This is the response";
-        String response = t.getRequestURI().toString();
-        //System.out.println(response);
-        getRequestedRoute(response);
+        //String response = httpExchange.getRequestURI().toString();
 
-        t.sendResponseHeaders(200, response.length());
-        OutputStream os = t.getResponseBody();
+        String response = getRequestedRoute(httpExchange);
+        System.out.println(response);
+
+        httpExchange.sendResponseHeaders(200, response.length());
+        OutputStream os = httpExchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
     }
 
-    String getRequestedRoute(String uri) {
+    String getRequestedRoute(HttpExchange httpExchange) {
+        String uri = httpExchange.getRequestURI().toString();
         try {
-            for (Method m : Class.forName("com.codecool.webroute.WebRoutes")
+            for (Method method : Class.forName("com.codecool.webroute.WebRoutes")
                     .getMethods()) {
 
-                if (m.isAnnotationPresent(WebRoute.class)) {
-                    Annotation annotation = m.getAnnotation(WebRoute.class);
+                if (method.isAnnotationPresent(WebRoute.class)) {
+                    Annotation annotation = method.getAnnotation(WebRoute.class);
                     WebRoute webRoute = (WebRoute) annotation;
                     //System.out.println(m.getName());
-                    if (webRoute.value().equals(uri)) {
-                        System.out.println(m.getName());
-                        /*try {
-                            m.invoke(null);
+                    if (webRoute.route().equals(uri)) {
+                        //System.out.println(method.getName());
+
+                        try {
+                            Object returnValue = method.invoke(null, httpExchange);
+                            System.out.println(returnValue);
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         } catch (InvocationTargetException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                     }
                 }
             }
