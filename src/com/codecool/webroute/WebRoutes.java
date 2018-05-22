@@ -23,7 +23,6 @@ public class WebRoutes {
 
     @WebRoute(path = "/user/<userName>")
     public static String routeGetUser(HttpExchange requestData) {
-        //String userName = "/[a-zA-Z]+";
         Pattern p = Pattern.compile("/[a-zA-Z]+$");
         Matcher m = p.matcher(requestData.getRequestURI().toString());
         m.find();

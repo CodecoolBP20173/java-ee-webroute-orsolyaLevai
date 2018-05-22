@@ -8,13 +8,11 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.regex.Pattern;
 
 public class WebHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         String response = getRequestedRoute(httpExchange);
-        System.out.println(response);
 
         httpExchange.sendResponseHeaders(200, response.length());
         OutputStream os = httpExchange.getResponseBody();
@@ -32,13 +30,9 @@ public class WebHandler implements HttpHandler {
                 if (method.isAnnotationPresent(WebRoute.class)) {
                     Annotation annotation = method.getAnnotation(WebRoute.class);
                     WebRoute webRoute = (WebRoute) annotation;
-                    //System.out.println(uri);
                     String webRoutePath = webRoute.path();
 
-                    //if ("/users/<valami>".matches("/users/\\<[a-z]+\\>")) System.out.println("yeah");
-                    //System.out.println("a" + webRoutePath);
-                    if (webRoute.path().equals(uri)) {
-                        //System.out.println(webRoutePath);
+                    if (webRoutePath.equals(uri)) {
                         try {
                             Object returnValue = method.invoke(null, httpExchange);
                             return (String) returnValue;
@@ -47,8 +41,7 @@ public class WebHandler implements HttpHandler {
                         } catch (InvocationTargetException e) {
                             e.printStackTrace();
                         }
-                    } else if (uri.matches("/user/[a-zA-Z]+") && webRoute.path().matches("/user/\\<[a-zA-Z]+\\>")) {
-                        //System.out.println(webRoutePath);
+                    } else if (uri.matches("/user/[a-zA-Z]+") && webRoutePath.matches("/user/\\<[a-zA-Z]+\\>")) {
                         Object returnValue = "";
                         try {
                             returnValue  = method.invoke(null, httpExchange);
@@ -59,8 +52,6 @@ public class WebHandler implements HttpHandler {
                         }
                         return (String) returnValue;
                     }
-
-
                 }
             }
         } catch (ClassNotFoundException e) {
