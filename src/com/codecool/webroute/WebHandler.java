@@ -47,7 +47,7 @@ public class WebHandler implements HttpHandler {
                         } catch (InvocationTargetException e) {
                             e.printStackTrace();
                         }
-                    } else if (uri.matches("/users/[a-z]+") && webRoute.path().matches("/users/\\<[a-zA-Z]+\\>")) {
+                    } else if (uri.matches("/user/[a-zA-Z]+") && webRoute.path().matches("/user/\\<[a-zA-Z]+\\>")) {
                         //System.out.println(webRoutePath);
                         Object returnValue = "";
                         try {

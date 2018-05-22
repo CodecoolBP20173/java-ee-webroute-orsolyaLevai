@@ -21,13 +21,13 @@ public class WebRoutes {
         return "<h1>This is the users page with "+ requestData.getRequestMethod() +" request</h1>";
     }
 
-    @WebRoute(path = "/users/<userName>")
+    @WebRoute(path = "/user/<userName>")
     public static String routeGetUser(HttpExchange requestData) {
-        String userName = "/[a-zA-Z]+";
+        //String userName = "/[a-zA-Z]+";
         Pattern p = Pattern.compile("/[a-zA-Z]+$");
         Matcher m = p.matcher(requestData.getRequestURI().toString());
         m.find();
 
-        return "<h1>This is the users page with "+ m.group().substring(1) +" request</h1>";
+        return "<h1>This is the " + m.group().substring(1) + "\'s user page request</h1>";
     }
 }
